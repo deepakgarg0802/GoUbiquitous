@@ -165,13 +165,13 @@ public class MyWatchFace extends CanvasWatchFaceService {
             mTextDatePaint = createTextDatePaint(resources.getColor(R.color.digital_text));
 
             mTextTempLowPaint = new Paint();
-            mTextTempLowPaint = createTextTempPaint(resources.getColor(R.color.colorPrimaryLight));
+            mTextTempLowPaint = createTextTempPaint(resources.getColor(R.color.digital_text));
 
             mTextTempHighPaint = new Paint();
-            mTextTempHighPaint = createTextTempPaint(resources.getColor(R.color.colorPrimaryLight));
+            mTextTempHighPaint = createTextTempPaint(resources.getColor(R.color.digital_text));
 
-            mYOffsetTime=TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 90, getResources().getDisplayMetrics());
-            mYOffsetDate=TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 125, getResources().getDisplayMetrics());
+            mYOffsetTime=TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 40, getResources().getDisplayMetrics());
+            mYOffsetDate=TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 75, getResources().getDisplayMetrics());
             //refractor dimensions later
             // mYOffsetTime = resources.getDimension(R.dimen.digital_y_offset_time);
             //mYOffsetDate = resources.getDimension(R.dimen.digital_y_offset_date);
@@ -179,8 +179,8 @@ public class MyWatchFace extends CanvasWatchFaceService {
             mXOffsetTime = mTextTimePaint.measureText("12:00") / 2;
             mXOffsetDate = mTextDatePaint.measureText("Mon, JAN 30, 2017") / 2;
 
-            mYOffsetDivider = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 130, getResources().getDisplayMetrics());
-            mYOffsetWeather = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, getResources().getDisplayMetrics());
+            mYOffsetDivider = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics());
+            mYOffsetWeather = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100, getResources().getDisplayMetrics());
 
             mCalendar = Calendar.getInstance();
         }
