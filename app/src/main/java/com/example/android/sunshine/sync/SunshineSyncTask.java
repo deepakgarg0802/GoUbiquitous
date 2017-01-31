@@ -25,6 +25,11 @@ import com.example.android.sunshine.data.WeatherContract;
 import com.example.android.sunshine.utilities.NetworkUtils;
 import com.example.android.sunshine.utilities.NotificationUtils;
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.wearable.DataMap;
+import com.google.android.gms.wearable.PutDataMapRequest;
+import com.google.android.gms.wearable.PutDataRequest;
+import com.google.android.gms.wearable.Wearable;
 
 import java.net.URL;
 
@@ -105,7 +110,17 @@ public class SunshineSyncTask {
                 }
 
             /* If the code reaches this point, we have successfully performed our sync */
+                GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
+                        .addApi(Wearable.API)
+                        .build();
 
+                PutDataMapRequest mapRequest = PutDataMapRequest.create("weather");
+                DataMap dataMap = mapRequest.getDataMap();
+                dataMap.putString("high_temp", weatherValues[0].get(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP).toString());
+                dataMap.putString("low_temp", weatherValues[0].get(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP).toString());
+                dataMap.putInt("id_weather", Integer.parseInt(weatherValues[0].get(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP).toString()));
+                PutDataRequest putDataRequest = mapRequest.asPutDataRequest();
+                Wearable.DataApi.putDataItem(googleApiClient, putDataRequest);
             }
 
         } catch (Exception e) {
