@@ -66,7 +66,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
     private String mHighTemp;
     private String mLowTemp;
     private int mWeatherId;
-    private GoogleApiClient mGoogleApiClient;
+    //private GoogleApiClient mGoogleApiClient;
 
     private static final Typeface NORMAL_TYPEFACE =
             Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL);
@@ -117,6 +117,13 @@ public class MyWatchFace extends CanvasWatchFaceService {
 
         boolean mAmbient;
         Calendar mCalendar;
+
+        GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(MyWatchFace.this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Wearable.API)
+                .build();
+
         final BroadcastReceiver mTimeZoneReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -149,11 +156,11 @@ public class MyWatchFace extends CanvasWatchFaceService {
                     .build());
             Resources resources = MyWatchFace.this.getResources();
             //mYOffset = resources.getDimension(R.dimen.digital_y_offset);
-            mGoogleApiClient = new GoogleApiClient.Builder(MyWatchFace.this)
+            /*mGoogleApiClient = new GoogleApiClient.Builder(MyWatchFace.this)
                     .addConnectionCallbacks(this)
                     .addOnConnectionFailedListener(this)
                     .addApi(Wearable.API)
-                    .build();
+                    .build();*/
 
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(resources.getColor(R.color.colorPrimary));
@@ -221,8 +228,8 @@ public class MyWatchFace extends CanvasWatchFaceService {
             super.onVisibilityChanged(visible);
 
             if (visible) {
-                mGoogleApiClient.connect();
                 registerReceiver();
+                mGoogleApiClient.connect();
 
                 // Update time zone in case it changed while we weren't visible.
                 mCalendar.setTimeZone(TimeZone.getDefault());
@@ -430,11 +437,11 @@ public class MyWatchFace extends CanvasWatchFaceService {
             for (DataEvent dataEvent : dataEventBuffer) {
                 if (dataEvent.getType() == DataEvent.TYPE_CHANGED) {
                     DataItem dataItem = dataEvent.getDataItem();
-                    if (dataItem.getUri().getPath().compareTo("weather") == 0) {
+                    if (dataItem.getUri().getPath().compareTo("/sunshine-weather") == 0) {
                         DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
-                        mHighTemp = dataMap.getString("high_temp");
-                        mLowTemp = dataMap.getString("low_temp");
-                        mWeatherId = dataMap.getInt("id_weather");
+                        mHighTemp = Integer.toString(dataMap.getInt("MAX_TEMP"));
+                        mLowTemp = Integer.toString(dataMap.getInt("MIN_TEMP"));
+                        mWeatherId = Integer.parseInt(dataMap.getString("WEATHER_KEY"));
                         Log.d("WATCH_DATA", "\nHigh: " + mHighTemp + "\nLow: " + mLowTemp + "\nID: " + mWeatherId);
                         invalidate();
                     }
