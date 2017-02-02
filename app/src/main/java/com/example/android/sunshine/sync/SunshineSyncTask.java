@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.format.DateUtils;
+import android.util.Log;
 
 import com.example.android.sunshine.data.SunshinePreferences;
 import com.example.android.sunshine.data.WeatherContract;
@@ -30,6 +31,9 @@ import com.example.android.sunshine.utilities.NotificationUtils;
 import com.example.android.sunshine.utilities.OpenWeatherJsonUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataMap;
 import com.google.android.gms.wearable.PutDataMapRequest;
 import com.google.android.gms.wearable.PutDataRequest;
@@ -62,8 +66,21 @@ public class SunshineSyncTask {
         dataMap.putInt("MAX_TEMP", mMaxTemp);
         dataMap.putString("WEATHER_KEY",mWeatherConditionKey);
         putDataRequest = putDataMapRequest.asPutDataRequest();
-        Wearable.DataApi.putDataItem(googleApiClient, putDataRequest);
-        googleApiClient.disconnect();
+        //Wearable.DataApi.putDataItem(googleApiClient, putDataRequest);
+        PendingResult<DataApi.DataItemResult> pendingResult = Wearable.DataApi.putDataItem(googleApiClient, putDataRequest);
+
+        pendingResult.setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+            @Override
+            public void onResult(final DataApi.DataItemResult result) {
+                if(result.getStatus().isSuccess()) {
+                    Log.d("SYNC", "Data item set: " + result.getDataItem().getUri());
+                }
+                else{
+                    Log.d("SYNC","not working");
+                }
+            }
+        });
+        //googleApiClient.disconnect();
     }
 
     synchronized public static void syncWeather(Context context) {
